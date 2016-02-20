@@ -4,13 +4,17 @@
 
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.template import loader
+from django.shortcuts import render
+from websiteFinder import websiteFinder
+
 
 def home(request):
     return HttpResponse("Hello, welcome to my home.")\
 
 def results(request, website_id):
-    response = "You are looking at the results for website: %s"
-    json_stuff = simplejson.dumps({"list_of_jsonstuffs" : ["a", "b"]})
-    return HttpResponse(json_stuff, content_type ="application/json")
+    websiteFinderInstance = websiteFinder(website_id)
+    websites = websiteFinderInstance.find_related()
+    context = {'result_list' : websites, }
+    return render(request, 'infodiscovery/results.html', context)
 
-    #return HttpResponse(response % website_id)

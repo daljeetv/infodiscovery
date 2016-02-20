@@ -1,0 +1,11 @@
+{% if result_list %}
+    <ul>
+        {% for website in result_list %}
+            <li>
+                <a href={{website}}> {{website}}</a>
+           </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No websites available</p>
+{% endif %}
