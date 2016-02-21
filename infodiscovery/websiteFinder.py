@@ -37,21 +37,54 @@ class websiteFinder:
                        'Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.46 Safari/536.5',)
 
     def find_related(self):
-        url = self.SEARCH_URL.format(url_quote(self.website))
+        if(self.fileExists()):
+            return self.findFileAndReturnContents()
+        visited = set()
+        links = self.findAllLinks(self.website)
+        rootLinks = self.getAllCleanLinks(links)
+        print "done first pass"
+        for rootWebsite in rootLinks:
+            if rootWebsite not in visited:
+                print "Now visiting:" + rootWebsite
+                visited.add(rootWebsite)
+                newLinks = self.findAllLinks(rootWebsite)
+                newRootLinks = self.getAllCleanLinks(newLinks)
+                for newRoot in newRootLinks:
+                    if newRoot not in rootLinks:
+                        rootLinks.append(newRoot)
+        self.storeInFile(rootLinks)
+        return rootLinks
+
+    def getAllCleanLinks(self,links):
+        if links is None:
+            return []
+        links = set(links)
+        rootLinks = []
+        for link in links:
+            if "http:\\\\" in link:
+                link = link.replace("http:\\\\", "")
+            else:
+                link = self.website + "/"+ link
+            rootLinks.append(link)
+        return rootLinks
+
+    def findAllLinks(self, website):
+        url = self.SEARCH_URL.format(url_quote(website))
         try:
             response =self.get_response(url)
         except:
-            return {"Sorry, no links found"}
+            return None
         links =  self.get_links_from_response(response)
         for link in links:
             logger.debug(link)
         return [x['href'] for x in links]
+
     def get_response(self,url):
-            try:
-                cleanUrl = self.cleanLink(url)
-                return requests.get(cleanUrl, headers={'User-Agent': random.choice(self.USER_AGENTS)}, proxies=self.get_proxies(), verify=False)
-            except requests.exceptions.SSLError as e:
-                raise e
+        try:
+            cleanUrl = self.cleanLink(url)
+            return requests.get(cleanUrl, headers={'User-Agent': random.choice(self.USER_AGENTS)}, proxies=self.get_proxies(), verify=False)
+        except requests.exceptions.SSLError as e:
+            raise e
 
     def cleanLink(self,url):
         contained = [x for x in self.prefixes if x in url]
