@@ -12,10 +12,13 @@ import random
 import re
 import sys
 try:
+    import cPickle as pickle
+except:
+    import pickle
+try:
     from urllib import getproxies
 except ImportError:
     from urllib.request import get_proxies
-
 try:
     from urllib.parse import quote as url_quote
 except ImportError:
@@ -38,14 +41,16 @@ class websiteFinder:
 
     def find_related(self):
         if(self.fileExists()):
-            return self.findFileAndReturnContents()
+            try:
+                return self.findFileAndReturnContents()
+            except:
+                pass
         visited = set()
         links = self.findAllLinks(self.website)
         rootLinks = self.getAllCleanLinks(links)
-        print "done first pass"
         for rootWebsite in rootLinks:
             if rootWebsite not in visited:
-                print "Now visiting:" + rootWebsite
+                print "visiting: " + rootWebsite
                 visited.add(rootWebsite)
                 newLinks = self.findAllLinks(rootWebsite)
                 newRootLinks = self.getAllCleanLinks(newLinks)
@@ -55,20 +60,55 @@ class websiteFinder:
         self.storeInFile(rootLinks)
         return rootLinks
 
+    def fileExists(self):
+        return os.path.isfile(self.getPickleFile())
+
+    def findFileAndReturnContents(self):
+        print "returning contents for file : " + self.getPickleFile()
+        try:
+            return pickle.load(open(self.getPickleFile(), 'r + b'))
+        except:
+            raise e
+    def storeInFile(self, rootLinks):
+        pickle.dump(rootLinks, open(self.getPickleFile(), 'wb'))
+
+    def getPickleFile(self):
+        return self.website + '.p'
+
+
     def getAllCleanLinks(self,links):
         if links is None:
             return []
         links = set(links)
         rootLinks = []
         for link in links:
-            if "http:\\\\" in link:
-                link = link.replace("http:\\\\", "")
+            print "Link before Cleaning: " + link
+            if "http://www." in link:
+                link = link.replace("http://wwww.", "www.")
+            if "https://www." in link:
+                link = link.replace("https://www.", "www.")
+            if "http://" in link:
+                link = link.replace("http://", "www.")
+            elif "https://" in link:
+                link = link.replace("https://", "www.")
+            elif "//www." in link:
+                link = link.replace("//www.", "www.")
+            elif "www." in link:
+                pass
             else:
                 link = self.website + "/"+ link
+            print "New Clean Link: " + link
             rootLinks.append(link)
+        if rootLinks is None:
+            print "We found no clean links"
+        else:
+            print "We found " + str(len(rootLinks))  + " clean links"
         return rootLinks
 
     def findAllLinks(self, website):
+        if(self.website not in website):
+            print "This website does not come from primary website."
+            return None
         url = self.SEARCH_URL.format(url_quote(website))
         try:
             response =self.get_response(url)
@@ -77,7 +117,12 @@ class websiteFinder:
         links =  self.get_links_from_response(response)
         for link in links:
             logger.debug(link)
-        return [x['href'] for x in links]
+        links =  [x['href'] for x in links]
+        if links is None:
+            print "no new links found for website " + website
+        else:
+            print "we found " + str(len(links)) + "for website: " + website
+        return links
 
     def get_response(self,url):
         try:

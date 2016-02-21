@@ -1,3 +1,15 @@
 The first thing I am going to do is create a blank html page.
-	To do this, I add a view in views.py and a url pattern in urls.py
+To do this, I add a view in views.py and a url pattern in urls.py
+
+So far, I have been debugging by testing a website, seeing an error, and fixing for that error.
+For every error fixed, I added logging.
+
+Now, I get a list of links for a given page and store that in a pickle file on the server.
+
+I need to create an object for the website. This object has: 
+    List of Websites 
+        1. Frequency
+        2. Alexa Rank
+
+
 
