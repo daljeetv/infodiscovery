@@ -1,0 +1,7 @@
+features to add:
+    alexa rank
+    reading time
+    multiple lists:
+        related pages
+        top subsites    
+    

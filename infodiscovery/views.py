@@ -3,7 +3,6 @@
 
 
 from django.http import HttpResponse
-from django.utils import simplejson
 from django.template import loader
 from django.shortcuts import render
 from websiteFinder import websiteFinder
