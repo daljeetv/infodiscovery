@@ -15,7 +15,10 @@ def test_find_related():
 def test_get_alexa_rank(website):
     websiteInstance = Website("www.gwern.net", None)
     print websiteInstance.get_alexa_rank("www.gwern.net")
-
+    print websiteInstance.get_alexa_rank("www.a16z.com")
+    print websiteInstance.get_alexa_rank("www.lesswrong.com")
+    print websiteInstance.get_alexa_rank("www.facebook.com")
+    print websiteInstance.get_alexa_rank("www.amazon.com")
 #test_find_related()
 
 

@@ -39,7 +39,14 @@ class websiteFinder:
                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.46 Safari/536.5',
                        'Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.46 Safari/536.5',)
 
+
     def find_related(self):
+        listOfWebsites = self.find_related_websites()
+        websiteInstance = website(self.website, listOfWebsites)
+        return websiteInstace.alexaRanks
+
+
+    def find_related_websites(self):
         if(self.fileExists()):
             try:
                 return self.findFileAndReturnContents()

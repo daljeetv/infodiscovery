@@ -1,7 +1,10 @@
 #/usr/bin/env python
 # coding=utf-8
 
-
+import urllib
+from lxml import etree
+from pyquery import PyQuery as pq
+from bs4 import BeautifulSoup
 
 class Website:
 
@@ -37,7 +40,9 @@ class Website:
 
     @staticmethod
     def get_alexa_rank(website):
-        return 1
-
-
-
+        alexaWebpage = "http://www.alexa.com/siteinfo/" + website
+        print alexaWebpage
+        d = pq(alexaWebpage)
+        #strong =  d('*[@id="traffic-rank-content"] > div > span > div > span > span > div')
+        soup = BeautifulSoup(d.text(), 'html.parser')
+        return soup.prettify().split("Updated Daily ")[1].split(" ")[0]
