@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import random
 import re
 import sys
+from website import Website
 try:
     import cPickle as pickle
 except:
@@ -42,8 +43,8 @@ class websiteFinder:
 
     def find_related(self):
         listOfWebsites = self.find_related_websites()
-        websiteInstance = website(self.website, listOfWebsites)
-        return websiteInstace.alexaRanks
+        websiteInstance = Website(self.website, listOfWebsites)
+        return websiteInstance.alexaRanks
 
 
     def find_related_websites(self):
@@ -76,12 +77,17 @@ class websiteFinder:
             return pickle.load(open(self.getPickleFile(), 'r + b'))
         except:
             raise e
+
     def storeInFile(self, rootLinks):
+        print self.getPickleFile()
         pickle.dump(rootLinks, open(self.getPickleFile(), 'wb'))
 
     def getPickleFile(self):
-        return self.website + '.p'
-
+        if self.website[-1] == '/':
+            self.website= self.website[:-1]
+        websiteFileName = self.website + '.p'
+        websiteFileName.encode('ascii','ignore')
+        return websiteFileName
 
     def getAllCleanLinks(self,links):
         if links is None:
@@ -92,9 +98,9 @@ class websiteFinder:
             print "Link before Cleaning: " + link
             if "http://www." in link:
                 link = link.replace("http://wwww.", "www.")
-            if "https://www." in link:
+            elif "https://www." in link:
                 link = link.replace("https://www.", "www.")
-            if "http://" in link:
+            elif "http://" in link:
                 link = link.replace("http://", "www.")
             elif "https://" in link:
                 link = link.replace("https://", "www.")
@@ -103,7 +109,15 @@ class websiteFinder:
             elif "www." in link:
                 pass
             else:
-                link = self.website + "/"+ link
+                if link[0] == '/':
+                    link = link[1:]
+                if(self.website[-1] == '/'):
+                    link = self.website + link
+                else:
+                    link = self.website + "/"+ link
+
+            if " \u200e" in link:
+                link = link.replace(" \u200e","")
             print "New Clean Link: " + link
             rootLinks.append(link)
         if rootLinks is None:
