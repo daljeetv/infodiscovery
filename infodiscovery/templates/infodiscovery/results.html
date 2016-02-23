@@ -1,8 +1,8 @@
 {% if result_list %}
     <ul>
-        {% for website in result_list %}
+        {% for website,count in result_list.items %}
             <li>
-                <a href={{website}}> {{website}}</a>
+                <a href={{website}}> {{website}} {{count}}</a>
            </li>
         {% endfor %}
     </ul>

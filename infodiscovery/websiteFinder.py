@@ -44,8 +44,7 @@ class websiteFinder:
     def find_related(self):
         listOfWebsites = self.find_related_websites()
         websiteInstance = Website(self.website, listOfWebsites)
-        return websiteInstance.alexaRanks
-
+        return websiteInstance
 
     def find_related_websites(self):
         if(self.fileExists()):
@@ -109,8 +108,8 @@ class websiteFinder:
             elif "www." in link:
                 pass
             else:
-                if link[0] == '/':
-                    link = link[1:]
+                if len(link) > 0 and link[0] == '/':
+                        link = link[1:]
                 if(self.website[-1] == '/'):
                     link = self.website + link
                 else:
@@ -130,7 +129,7 @@ class websiteFinder:
         if(self.website not in website):
             print "This website does not come from primary website."
             return None
-        url = self.SEARCH_URL.format(url_quote(website))
+        url = self.SEARCH_URL.format(url_quote(website.encode('ascii','ignore')))
         try:
             response =self.get_response(url)
         except:
