@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Blog Explorer</title>
+    <meta charset="utf-8" />
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type = "text/css"/>
+    <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    
+    <style type="text/css">
+        html,
+        body {
+          height:100%
+        }
+    </style>
+</head>
+<body class="body" style="background-color:#f6f6f6">
+    <div class="container-fluid" style="min-height:95%; ">
+        <div class="row">
+            <br>
+            <center>
+                <h3>Blog Explorer</h3>
+                <p>Discover what your favorite blogger reads</p>
+                <br>
+                {% block content %}
+                {% endblock %}
+                <br>
+            </center>
+
+        </div>
+        <hr>
+    </div>
+    
+    <footer>
+    </footer>   
+    
+</body>
+</html>

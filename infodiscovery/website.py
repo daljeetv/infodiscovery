@@ -55,8 +55,18 @@ class Website:
         resultSet = soup.find_all("strong")
         if resultSet is None or len(resultSet) < 8:
             return -1
-        alexaRankAsStr =  str(resultSet[8]).split("\n")[1].split(" ")[0]
+        if len(resultSet) > 8:
+            alexaRankAsStr =  str(resultSet[8]).split("\n")
+            if len(alexaRankAsStr) > 1:
+                alexaRankAsStr = alexaRankAsStr[1].split(" ")[0]
+            else:
+                return -1
+        else:
+            return -1
         if "," in alexaRankAsStr:
             alexaRankAsStr = alexaRankAsStr.replace(",","")
-        print alexaWebpage + " alexaRank: " + alexaRankAsStr
-        return int(alexaRankAsStr)
+        print str(alexaWebpage) + " alexaRank: " + str(alexaRankAsStr)
+        try:
+            return int(alexaRankAsStr)
+        except:
+            return -1
