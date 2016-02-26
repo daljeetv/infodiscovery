@@ -12,7 +12,6 @@ Run Using Command:
 ::
     $python manage.py runserver
 
-
     $ localhost:8000/{website_address}
     > {list of websites}
 
